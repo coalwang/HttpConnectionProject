@@ -8,6 +8,7 @@ import android.content.Intent;
 import android.graphics.BitmapFactory;
 
 import com.wangkai.httpconnectionproject.R;
+import com.wangkai.httpconnectionproject.utils.Tools;
 
 public class NotificationShowManager {
 

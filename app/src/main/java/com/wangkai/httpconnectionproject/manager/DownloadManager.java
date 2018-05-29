@@ -5,6 +5,8 @@ import android.content.Intent;
 import android.net.Uri;
 import android.text.TextUtils;
 
+import com.wangkai.httpconnectionproject.service.ApkDownloadAndInstallService;
+
 public class DownloadManager {
 
     /**

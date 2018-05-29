@@ -151,7 +151,7 @@ public class HttpURLConnectionManager {
             urlConn.setReadTimeout(5 * 1000);
             // 设置是否使用缓存  默认是true
             urlConn.setUseCaches(true);
-            // 设置为Post请求
+            // 设置为GET请求
             urlConn.setRequestMethod("GET");
             urlConn.getRequestProperties();
             //urlConn设置请求头信息
