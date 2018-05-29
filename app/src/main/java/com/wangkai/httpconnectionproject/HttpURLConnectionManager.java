@@ -16,11 +16,13 @@ import java.net.URLEncoder;
 import java.util.HashMap;
 
 /**
+ * 添加到github
  * HttpURLConnection管理类，主要完成以下功能：
  * 1. 完成get请求
  * 2. 完成post请求
  * 3. 完成文件的下载
  * 4. 完成文件的上传
+ * created by wangkai 2018.5.29
  */
 public class HttpURLConnectionManager {
 
