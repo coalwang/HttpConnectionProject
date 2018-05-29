@@ -1,4 +1,4 @@
-package com.wangkai.httpconnectionproject;
+package com.wangkai.httpconnectionproject.manager;
 
 import android.util.Log;
 

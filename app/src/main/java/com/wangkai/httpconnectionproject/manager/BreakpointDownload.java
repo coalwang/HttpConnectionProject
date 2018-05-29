@@ -1,30 +1,18 @@
-package com.wangkai.httpconnectionproject;
+package com.wangkai.httpconnectionproject.manager;
 
-import android.net.ProxyInfo;
-import android.net.Uri;
 import android.os.Environment;
-import android.renderscript.ScriptGroup;
 import android.text.TextUtils;
 
-import java.io.BufferedInputStream;
-import java.io.BufferedOutputStream;
-import java.io.ByteArrayOutputStream;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.RandomAccessFile;
-import java.lang.reflect.Field;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.ProtocolException;
 import java.net.URL;
-import java.util.Arrays;
 import java.util.Map;
-
-import javax.net.ssl.HttpsURLConnection;
 
 /**
  * 文件断点下载
