@@ -1,55 +1,51 @@
 package com.wangkai.httpconnectionproject;
 
+import android.util.Log;
+
+import java.io.ByteArrayOutputStream;
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.net.URLEncoder;
+import java.util.HashMap;
+
+/**
+ * HttpURLConnection管理类，主要完成以下功能：
+ * 1. 完成get请求
+ * 2. 完成post请求
+ * 3. 完成文件的下载
+ * 4. 完成文件的上传
+ */
 public class HttpURLConnectionManager {
 
     /**
      * Get请求
-     * @param paramsMap
+     * @param requestUrl：请求url
      */
-    private void requestGet(HashMap<String, String> paramsMap) {
-        try {
-            String baseUrl = "https://xxx.com/getUsers?";
-            StringBuilder tempParams = new StringBuilder();
-            int pos = 0;
-            for (String key : paramsMap.keySet()) {
-                if (pos > 0) {
-                    tempParams.append("&");
-                }
-                tempParams.append(String.format("%s=%s", key, URLEncoder.encode(paramsMap.get(key),"utf-8")));
-                pos++;
-            }
-            String requestUrl = baseUrl + tempParams.toString();
-            // 新建一个URL对象
-            URL url = new URL(requestUrl);
+    private void requestGet(String requestUrl) throws Exception{
+        URL url = new URL(requestUrl);  // 实例化url
+        HttpURLConnection connection = (HttpURLConnection)url.openConnection();  // 实例化HttpURLConnection
             // 打开一个HttpURLConnection连接
-            HttpURLConnection urlConn = (HttpURLConnection) url.openConnection();
-            // 设置连接主机超时时间
-            urlConn.setConnectTimeout(5 * 1000);
-            //设置从主机读取数据超时
-            urlConn.setReadTimeout(5 * 1000);
-            // 设置是否使用缓存  默认是true
-            urlConn.setUseCaches(true);
-            // 设置为Post请求
-            urlConn.setRequestMethod("GET");
-            //urlConn设置请求头信息
-            //设置请求中的媒体类型信息。
-            urlConn.setRequestProperty("Content-Type", "application/json");
-            //设置客户端与服务连接类型
-            urlConn.addRequestProperty("Connection", "Keep-Alive");
-            // 开始连接
-            urlConn.connect();
-            // 判断请求是否成功
-            if (urlConn.getResponseCode() == 200) {
-                // 获取返回的数据
-                String result = streamToString(urlConn.getInputStream());
-                Log.e(TAG, "Get方式请求成功，result--->" + result);
-            } else {
-                Log.e(TAG, "Get方式请求失败");
-            }
+        connection.setConnectTimeout(5000); // 设置连接主机超时时间
+        connection.setReadTimeout(5 * 1000); //设置从主机读取数据超时
+        connection.setUseCaches(true);  // 设置是否使用缓存  默认是true
+        connection.setRequestMethod("GET");
+        //设置请求中的媒体类型信息。
+        connection.setRequestProperty("Content-Type", "application/json");
+        //设置客户端与服务连接类型
+        connection.addRequestProperty("Connection", "Keep-Alive");
+        // 判断请求是否成功
+        if (connection.getResponseCode() == 200) {
+            // 获取返回的数据
+            String result = streamToString(connection.getInputStream());
             // 关闭连接
-            urlConn.disconnect();
-        } catch (Exception e) {
-            Log.e(TAG, e.toString());
+            connection.disconnect();
         }
     }
 
@@ -70,7 +66,7 @@ public class HttpURLConnectionManager {
                 pos++;
             }
             String params =tempParams.toString();
-            // 请求的参数转换为byte数组
+            // 请求的参数转换为byte数组，getBytes()：将一个字符串转换成字符数组
             byte[] postData = params.getBytes();
             // 新建一个URL对象
             URL url = new URL(baseUrl);
@@ -94,23 +90,25 @@ public class HttpURLConnectionManager {
             urlConn.setRequestProperty("Content-Type", "application/json");
             // 开始连接
             urlConn.connect();
-            // 发送请求参数
+            // 发送请求参数，获得输出流，向服务器输出数据，
+            // 传入数据之前需要获取输出流，
+            // 拿数据之前需要获取输入流
             DataOutputStream dos = new DataOutputStream(urlConn.getOutputStream());
-            dos.write(postData);
+            dos.write(postData);  // 通过输出流，向服务器输出数据
             dos.flush();
             dos.close();
             // 判断请求是否成功
             if (urlConn.getResponseCode() == 200) {
                 // 获取返回的数据
                 String result = streamToString(urlConn.getInputStream());
-                Log.e(TAG, "Post方式请求成功，result--->" + result);
+                Log.e("TAG", "Post方式请求成功，result--->" + result);
             } else {
-                Log.e(TAG, "Post方式请求失败");
+                Log.e("TAG", "Post方式请求失败");
             }
             // 关闭连接
             urlConn.disconnect();
         } catch (Exception e) {
-            Log.e(TAG, e.toString());
+            Log.e("TAG", e.toString());
         }
     }
 
@@ -131,7 +129,7 @@ public class HttpURLConnectionManager {
             byte[] byteArray = baos.toByteArray();
             return new String(byteArray);
         } catch (Exception e) {
-            Log.e(TAG, e.toString());
+            Log.e("eee", e.toString());
             return null;
         }
     }
@@ -153,17 +151,18 @@ public class HttpURLConnectionManager {
             urlConn.setUseCaches(true);
             // 设置为Post请求
             urlConn.setRequestMethod("GET");
+            urlConn.getRequestProperties();
             //urlConn设置请求头信息
             //设置请求中的媒体类型信息。
             urlConn.setRequestProperty("Content-Type", "application/json");
             //设置客户端与服务连接类型
             urlConn.addRequestProperty("Connection", "Keep-Alive");
             // 开始连接
-            urlConn.connect();
+            urlConn.connect();  // 可有可无
             // 判断请求是否成功
             if (urlConn.getResponseCode() == 200) {
                 String filePath="";
-                File  descFile = new File(filePath);
+                File descFile = new File(filePath);
                 FileOutputStream fos = new FileOutputStream(descFile);;
                 byte[] buffer = new byte[1024];
                 int len;
@@ -173,19 +172,19 @@ public class HttpURLConnectionManager {
                     fos.write(buffer, 0, len);
                 }
             } else {
-                Log.e(TAG, "文件下载失败");
+                Log.e("TAG", "文件下载失败");
             }
             // 关闭连接
             urlConn.disconnect();
         } catch (Exception e) {
-            Log.e(TAG, e.toString());
+            Log.e("TAG", e.toString());
         }
     }
 
     /**
      * 文件上传
      */
-    private void upLoadFile(String filePath, HashMap<String, String> paramsMap) {
+    private void upLoadFile(String filePath, HashMap<String, String> paramsMap) throws Exception{
         try {
             String baseUrl = "https://xxx.com/uploadFile";
             File file = new File(filePath);
@@ -248,12 +247,12 @@ public class HttpURLConnectionManager {
             if (statusCode == 200) {
                 // 获取返回的数据
                 String result = streamToString(urlConn.getInputStream());
-                Log.e(TAG, "上传成功，result--->" + result);
+                Log.e("TAG", "上传成功，result--->" + result);
             } else {
-                Log.e(TAG, "上传失败");
+                Log.e("TAG", "上传失败");
             }
         } catch (IOException e) {
-            Log.e(TAG, e.toString());
+            Log.e("TAG", e.toString());
         }
     }
 }
